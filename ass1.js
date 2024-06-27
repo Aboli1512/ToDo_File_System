@@ -28,19 +28,23 @@ app.get('/todo/:id',(request,response)=>
 
 app.post('/todos',(request,response)=>
     {
+ 
+
         fs.readFile('list.json','utf8',function(err,data)
         {
-            var old = JSON.parse(data);
-            var Toadd = JSON.parse(request.body);
-
-            old[Toadd[id]] = Toadd[ToDo];
-
-            fs.writeFile('list.json',JSON.stringify(old),(err)=>
+            const{id , Todo} = request.body;
+            let old = JSON.parse(data);
+            old[id] = Todo;
+            fs.writeFile('list.json',JSON.stringify(old),function(err)
             {
                 if(err) throw err;
-                console.log("done");
-            });
-            });
+                console.log("Done");
+                fs.readFile('list.json','utf8',function(err,data)
+                {
+                    console.log((data));
+                });
+            }); 
+        });
     });
 app.listen(3000 , ()=>
 {
