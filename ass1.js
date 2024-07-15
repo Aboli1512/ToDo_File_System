@@ -8,10 +8,9 @@ var fs = require('fs');
 
 app.get('/todos',(request,response)=>
     {
-        console.log("List of todos and ids:");
         fs.readFile('list.json','utf8',function(err,data)
         {
-            console.log((data));
+            response.json(data);
         });         
     });
 
@@ -19,9 +18,9 @@ app.get('/todo/:id',(request,response)=>
     {
         fs.readFile('list.json','utf8',function(err,data)
         {
-            var obj = JSON.parse(data);
+            let obj = JSON.parse(data);
             const idprop = request.params.id;
-            console.log((obj[idprop]));
+            response.send(obj[idprop]);
         });    
         
     });
@@ -38,12 +37,31 @@ app.post('/todos',(request,response)=>
             fs.writeFile('list.json',JSON.stringify(old),function(err)
             {
                 if(err) throw err;
-                console.log("Done");
+                response.send("Done");
                 fs.readFile('list.json','utf8',function(err,data)
                 {
                     console.log((data));
                 });
             }); 
+        });
+    });
+
+app.delete('/todo/:id',(request,response)=>
+    {
+        fs.readFile('list.json','utf8',function(err,data)
+        {
+            let list = JSON.parse(data);
+            const id_inp = request.params.id;
+            delete list[id_inp];
+
+            fs.writeFile('list.json',JSON.stringify(list),function(err)
+            {
+                if(err) throw err;
+                fs.readFile('list.json','utf8',function(err,data)
+                {
+                    console.log((data));
+                });
+            });
         });
     });
 app.listen(3000 , ()=>
